@@ -1,0 +1,157 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truescale Advisors - Business Management Consulting</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { scroll-behavior: smooth; }
+        .hero-bg { background: linear-gradient(to right, #2E2E2E, #4A4A4A); }
+        .nav-bg { background-color: #2E2E2E; }
+        .footer-bg { background-color: #4A4A4A; }
+        .logo-img { max-height: 80px; width: auto; filter: brightness(1.5); }
+        .text-silver { color: #D3D3D3; }
+        .hover-silver:hover { color: #E0E0E0; }
+    </style>
+</head>
+<body class="font-sans text-gray-800">
+    <!-- Navigation -->
+    <nav class="nav-bg shadow-lg fixed w-full z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <img src="https://i.imgur.com/placeholder-logo.png" alt="Truescale Advisors Logo" class="logo-img">
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="#home" class="text-silver hover-silver px-3 py-2 rounded-md">Home</a>
+                    <a href="#services" class="text-silver hover-silver px-3 py-2 rounded-md">Services</a>
+                    <a href="#about" class="text-silver hover-silver px-3 py-2 rounded-md">About</a>
+                    <a href="#contact" class="text-silver hover-silver px-3 py-2 rounded-md">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-bg text-white pt-24 pb-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <img src="https://i.imgur.com/placeholder-logo.png" alt="Truescale Advisors Logo" class="logo-img mx-auto mb-6">
+            <h2 class="text-4xl md:text-5xl font-bold text-silver mb-4">Empowering Your Business Growth</h2>
+            <p class="text-lg md:text-xl text-silver mb-8">Truescale Advisors: Your partner in business management, scaling, and success.</p>
+            <a href="#contact" class="bg-silver text-gray-900 px-6 py-3 rounded-full font-semibold hover:bg-gray-200">Get in Touch</a>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">Our Services</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-900">Business Management Consulting</h3>
+                    <p>Strategic guidance to optimize operations and achieve your business goals.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-900">Data Analysis</h3>
+                    <p>Leverage data-driven insights to make informed decisions and drive growth.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-900">Project Management</h3>
+                    <p>Expert planning and execution to ensure your projects succeed on time and within budget.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-900">Account Management</h3>
+                    <p>Efficient management of client accounts to enhance relationships and retention.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-900">Bookkeeping</h3>
+                    <p>Accurate financial record-keeping to keep your business on track.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-900">Business Scaling</h3>
+                    <p>Custom strategies to scale your operations and maximize profitability.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20">
+        <div class="max-w-7xl mx-auto px-8 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">About Truescale Advisors</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">Truescale Advisors is dedicated to helping businesses thrive through expert consulting services. With a focus on business management, data analysis, and strategic scaling, we empower our clients to achieve sustainable growth and success. Our team brings years of experience and a passion for delivering results.</p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">Contact Us</h2>
+            <div class="max-w-lg mx-auto text-center">
+                <p class="text-lg mb-4"><strong>Email:</strong> <a href="mailto:truescalegroup@gmail.com" class="text-blue-600 hover:underline">truescalegroup@gmail.com</a></p>
+                <p class="text-lg mb-4"><strong>Phone:</strong> <a href="tel:+16475452843" class="text-blue-600 hover:underline">647-545-2843</a></p>
+                <p class="text-lg">Reach out to discuss how Truescale Advisors can help your business succeed.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-bg text-white py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p>© 2025 Truescale Advisors. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
